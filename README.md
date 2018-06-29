@@ -1,8 +1,10 @@
 ![logo](https://raw.githubusercontent.com/dev-labs-bg/fast-list/master/logo.png)
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-a31f34.svg?style=flat-square)](https://opensource.org/licenses/MIT) [![Download](https://img.shields.io/badge/download-1.1-6db33f.svg?style=flat-square&label=version)](https://bintray.com/radoslav/maven/fast-list/1.1/link) [![Kotlin](https://img.shields.io/badge/kotlin-1.2.41-f5801e.svg?style=flat-square)](http://kotlinlang.org) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
 
 Create dynamic, fast and easy recycler view lists. **No adapters, no view holders**.
+
+[![Download](https://img.shields.io/badge/download-1.1-6db33f.svg?style=flat-square&label=version)](https://bintray.com/radoslav/maven/fast-list/1.1/link) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
+
 
 ## Usage
 
