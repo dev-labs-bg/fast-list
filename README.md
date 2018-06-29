@@ -15,7 +15,7 @@ FastList supports 2 types of lists- single layout lists and dynamic lists.
 ```kotlin
         val list = listOf(Item("fast", 1), Item("recycler", 2), Item("view", 1))
 
-        recycler_view.bind(list, R.layout.item) { it -> Item
+        recycler_view.bind(list, R.layout.item) { it : Item ->
             item_text.text = it.value
         }
 ```
