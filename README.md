@@ -3,7 +3,7 @@
 
 Create dynamic, fast and easy recycler view lists. **No adapters, no view holders**.
 
-[![Download](https://img.shields.io/badge/download-1.1-6db33f.svg?style=flat-square&label=version)](https://bintray.com/radoslav/maven/fast-list/1.1/link) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
+[![Download](https://img.shields.io/badge/download-1.1-ff0000.svg?style=flat-square&label=version)](https://bintray.com/radoslav/maven/fast-list/1.1/link) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
 
 
 ## Usage
