@@ -19,7 +19,7 @@ FastList supports 2 types of lists- single layout lists and dynamic lists.
             item_text.text = it.value
         }
 ```
-That's it! The first parameter is the list you want to show, the second is the ID of the layout d the third one is a function for binding each element. It uses Kotlin Extensions, so you can directly address the XML views and set them up.
+That's it! The first parameter is the list you want to show, the second is the ID of the layout and the third one is a function for binding each element. It uses Kotlin Extensions, so you can directly address the XML views and set them up.
 
 
 - The second type is dynamic lists with multiple layouts:
