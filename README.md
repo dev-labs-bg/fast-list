@@ -46,7 +46,6 @@ The map function accepts 3 parameters. The first is the ID of the layout for the
 
 ```gradle
 dependencies {
-//The gradle and maven versions currently don't work. Please use the manual solution.
   compile 'bg.devlabs.fastlist:fast-list:$latest_version'
   
 }
@@ -54,7 +53,6 @@ dependencies {
  
 ### Maven
 ```xml
-//The gradle and maven versions currently don't work. Please use the manual solution.
 <dependency>
   <groupId>bg.devlabs.fastlist</groupId>
   <artifactId>fast-list</artifactId>
