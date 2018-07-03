@@ -46,7 +46,7 @@ The map function accepts 3 parameters. The first is the ID of the layout for the
 
 ```gradle
 dependencies {
-  compile 'bg.devlabs.fastlist:fast-list:$latest_version'
+  implementation 'bg.devlabs.fastlist:fast-list:$latest_version'
   
 }
  ```
