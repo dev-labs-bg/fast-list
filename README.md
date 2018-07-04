@@ -3,7 +3,7 @@
 
 Create dynamic, fast and easy recycler view lists. **No adapters, no view holders**.
 
-[![Download](https://img.shields.io/badge/download-1.1-6db33f.svg?style=flat-square&label=version)](https://bintray.com/radoslav/maven/fast-list/1.1/link) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
+[![Download](https://img.shields.io/badge/download-1.2-6db33f.svg?style=flat-square&label=version)](https://bintray.com/radoslav/maven/fast-list/1.1/link) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
 
 
 ## Usage
@@ -38,6 +38,14 @@ That's it! The first parameter is the list you want to show, the second is the I
 ```
 The map function accepts 3 parameters. The first is the ID of the layout for the type. The second is the predicate function by which you want to sort your items. The last one is the "view holder" binding function for each element. It uses Kotlin Extensions, so you can directly address the XML views and set them up.
 
+
+You can also update a list in a shown recycler view with this DiffUtils update function:
+```kotlin
+        ...
+        val list2 = listOf(Item("fast", 1))
+
+        recycler_view.update(list2)
+```
 
 ---
 ## Download
