@@ -3,7 +3,7 @@
 
 Create dynamic, fast and easy recycler view lists. **No adapters, no view holders**.
 
-[![Download](https://img.shields.io/badge/download-1.2-6db33f.svg?style=flat-square&label=version)](https://bintray.com/radoslav/maven/fast-list/1.1/link) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
+[![Download](https://img.shields.io/badge/download-1.2-6db33f.svg?style=flat-square&label=version)](https://bintray.com/radoslav/maven/fast-list/1.2/link) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
 
 
 ## Usage
@@ -55,7 +55,7 @@ You can also update a list in a shown recycler view with this DiffUtils update f
 ```gradle
 dependencies {
   implementation 'bg.devlabs.fastlist:fast-list:$latest_version'
-  
+
 }
  ```
  
