@@ -1,12 +1,14 @@
 package com.list.rados.recyclerviewlibrary
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.list.rados.fast_list.bind
 import com.list.rados.fast_list.update
+import com.list.rados.recyclerviewlibrary.R.id.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item.view.*
 import kotlinx.android.synthetic.main.item_second.view.*
@@ -21,6 +23,8 @@ class MainActivity : AppCompatActivity() {
 
         val list = listOf(Item("first", 2), Item("second", 2), Item("third", 1), Item("fourth", 1), Item("fifth", 1))
         val list2 = listOf(Item("first", 2), Item("third", 1), Item("fifth", 1), Item("sixth", 1))
+
+	    val recyclerView: RecyclerView = recycler_view
 
         recycler_view.bind(list, R.layout.item) { item: Item ->
             item_text.text = item.value
