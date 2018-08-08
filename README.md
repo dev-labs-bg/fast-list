@@ -50,6 +50,13 @@ You can also update a list in a shown recycler view with this DiffUtils update f
 ---
 ## Download
 
+### Manually
+
+You can also manually download [the library class](https://github.com/dev-labs-bg/fast-list/blob/master/fast-list/src/main/java/com/list/rados/fast_list/BaseList.kt) and use it in your application.
+
+**Important**: For the manual download you need Kotlin extensions to be enabled. To turn them on, simply place "apply plugin: 'kotlin-android-extensions'" inside of your app build.gradle
+
+
 ### Gradle
 
 ```gradle
@@ -68,10 +75,6 @@ dependencies {
   <type>pom</type>
 </dependency>
 ```
-
-### Manually
-
-You can also manually download [the library class](https://github.com/dev-labs-bg/fast-list/blob/master/fast-list/src/main/java/com/list/rados/fast_list/BaseList.kt) and use it in your application.
 
 ---
 ## Compatibility
