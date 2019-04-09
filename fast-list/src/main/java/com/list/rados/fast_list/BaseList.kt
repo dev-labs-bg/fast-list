@@ -1,12 +1,12 @@
 package com.list.rados.fast_list
 
-import android.support.annotation.LayoutRes
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 
 /**
@@ -52,15 +52,24 @@ fun <T> RecyclerView.update(newItems: List<T>) {
 open class FastListAdapter<T>(private var items: MutableList<T>, private var list: RecyclerView
 ) : RecyclerView.Adapter<FastListViewHolder<T>>() {
 
-    private inner class BindMap(val layout: Int, var type: Int = 0, val bind: View.(item: T) -> Unit, val predicate: (item: T) -> Boolean)
+    private inner class BindMap(val layout: Int?, var type: Int = 0, val bind: View.(item: T) -> Unit, val predicate: (item: T) -> Boolean) {
+        constructor(lf: LayoutFactory, type: Int = 0, bind: View.(item: T) -> Unit, predicate: (item: T) -> Boolean) : this(null, type, bind, predicate){
+            layoutFactory = lf
+        }
+        var layoutFactory : LayoutFactory? = null
+    }
 
     private var bindMap = mutableListOf<BindMap>()
     private var typeCounter = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FastListViewHolder<T> {
         return bindMap.first { it.type == viewType }.let {
-            FastListViewHolder(LayoutInflater.from(parent.context).inflate(it.layout,
-                    parent, false), viewType)
+            if (it.layoutFactory == null) {
+                return FastListViewHolder(LayoutInflater.from(parent.context).inflate(it.layout!!,
+                        parent, false), viewType)
+            } else {
+                return FastListViewHolder(it.layoutFactory!!.createView(parent, viewType), viewType)
+            }
         }
     }
 
@@ -86,6 +95,20 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
      */
     fun map(@LayoutRes layout: Int, predicate: (item: T) -> Boolean, bind: View.(item: T) -> Unit): FastListAdapter<T> {
         bindMap.add(BindMap(layout, typeCounter++, bind, predicate))
+        list.adapter = this
+        return this
+    }
+
+
+    /**
+     * The function used for mapping types to layouts
+     * @param layoutFactory - factory that creates the view for this adapter
+     * @param predicate - Function used to sort the items. For example, a Type field inside your items class with different values for different types.
+     * @param bind - The "binding" function between the item and the layout. This is the standard "bind" function in traditional ViewHolder classes. It uses Kotlin Extensions
+     * so you can just use the XML names of the views inside your layout to address them.
+     */
+    fun map(layoutFactory: LayoutFactory, predicate: (item: T) -> Boolean, bind: View.(item: T) -> Unit): FastListAdapter<T> {
+        bindMap.add(BindMap(layoutFactory, typeCounter++, bind, predicate))
         list.adapter = this
         return this
     }
@@ -117,6 +140,10 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
         diff.dispatchUpdatesTo(this)
     }
 
+}
+
+interface LayoutFactory {
+    fun createView(parent: ViewGroup, type: Int) : View;
 }
 
 class FastListViewHolder<T>(override val containerView: View, val holderType: Int) : RecyclerView.ViewHolder(containerView), LayoutContainer {
