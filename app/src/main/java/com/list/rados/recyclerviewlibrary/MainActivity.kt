@@ -1,14 +1,20 @@
 package com.list.rados.recyclerviewlibrary
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.widget.LinearLayoutManager
-import androidx.core.widget.toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.list.rados.fast_list.LayoutFactory
 import com.list.rados.fast_list.bind
 import com.list.rados.fast_list.update
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item.view.*
+import kotlinx.android.synthetic.main.item_custom.view.*
 import kotlinx.android.synthetic.main.item_second.view.*
 
 class MainActivity : AppCompatActivity() {
@@ -20,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val list = listOf(Item("first", 2), Item("second", 2), Item("third", 1), Item("fourth", 1), Item("fifth", 1))
-        val list2 = listOf(Item("first", 2), Item("third", 1), Item("fifth", 1), Item("sixth", 1))
+        val list2 = listOf(Item("first", 2), Item("third", 1), Item("fifth", 1), Item("sixth", 3))
 
         recycler_view.bind(list, R.layout.item) { item: Item ->
             item_text.text = item.value
@@ -42,12 +48,29 @@ class MainActivity : AppCompatActivity() {
                         toast(item.value)
                     }
                 }
+                .map(layoutFactory = LocalFactory(this), predicate = { it.type == 3 }) { item: Item ->
+                    item_custom_text.text = item.value
+                    container_custom.setOnClickListener {
+                        toast(item.value)
+                    }
+                }
                 .layoutManager(LinearLayoutManager(this))
 
         delay(2000) {
             recycler_view.update(list2)
         }
 
+    }
+
+    private fun toast(value: String) {
+        Toast.makeText(this, value, Toast.LENGTH_SHORT).show()
+    }
+}
+
+class LocalFactory(val activity: AppCompatActivity) : LayoutFactory {
+    override fun createView(parent: ViewGroup, type: Int): View {
+        return LayoutInflater.from(activity).inflate(R.layout.item_custom,
+                parent, false)
     }
 }
 
