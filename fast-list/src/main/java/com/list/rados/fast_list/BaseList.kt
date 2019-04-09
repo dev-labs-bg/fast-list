@@ -64,11 +64,11 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FastListViewHolder<T> {
         return bindMap.first { it.type == viewType }.let {
-            if (it.layoutFactory == null) {
+            it.layoutFactory?.let {
+                return FastListViewHolder(it.createView(parent, viewType), viewType)
+            } ?: run{
                 return FastListViewHolder(LayoutInflater.from(parent.context).inflate(it.layout,
                         parent, false), viewType)
-            } else {
-                return FastListViewHolder(it.layoutFactory!!.createView(parent, viewType), viewType)
             }
         }
     }
