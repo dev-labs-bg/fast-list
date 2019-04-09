@@ -52,8 +52,8 @@ fun <T> RecyclerView.update(newItems: List<T>) {
 open class FastListAdapter<T>(private var items: MutableList<T>, private var list: RecyclerView
 ) : RecyclerView.Adapter<FastListViewHolder<T>>() {
 
-    private inner class BindMap(val layout: Int?, var type: Int = 0, val bind: View.(item: T) -> Unit, val predicate: (item: T) -> Boolean) {
-        constructor(lf: LayoutFactory, type: Int = 0, bind: View.(item: T) -> Unit, predicate: (item: T) -> Boolean) : this(null, type, bind, predicate){
+    private inner class BindMap(val layout: Int, var type: Int = 0, val bind: View.(item: T) -> Unit, val predicate: (item: T) -> Boolean) {
+        constructor(lf: LayoutFactory, type: Int = 0, bind: View.(item: T) -> Unit, predicate: (item: T) -> Boolean) : this(0, type, bind, predicate){
             layoutFactory = lf
         }
         var layoutFactory : LayoutFactory? = null
@@ -65,7 +65,7 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FastListViewHolder<T> {
         return bindMap.first { it.type == viewType }.let {
             if (it.layoutFactory == null) {
-                return FastListViewHolder(LayoutInflater.from(parent.context).inflate(it.layout!!,
+                return FastListViewHolder(LayoutInflater.from(parent.context).inflate(it.layout,
                         parent, false), viewType)
             } else {
                 return FastListViewHolder(it.layoutFactory!!.createView(parent, viewType), viewType)
