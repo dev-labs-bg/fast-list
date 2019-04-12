@@ -45,7 +45,7 @@ fun <T> RecyclerView.bind(items: List<T>, @LayoutRes singleLayout: Int = 0, sing
  * by changing the lambda in the function
  */
 fun <T> RecyclerView.update(newItems: List<T>) {
-    (adapter as? FastListAdapter<T>)?.update(newItems) { o, n -> o == n }
+    (adapter as? FastListAdapter<T>)?.update(newItems) { o, n, _ -> o == n }
 }
 
 
@@ -121,29 +121,32 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
         return this
     }
 
-    fun update(newList: List<T>, compare: (T, T) -> Boolean) {
+    fun update(newList: List<T>, compare: (T, T, Boolean) -> Boolean) {
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
 
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return compare(items[oldItemPosition], newList[newItemPosition])
+                return compare(items[oldItemPosition], newList[newItemPosition], false)
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return items[oldItemPosition] == newList[newItemPosition]
+                return compare(items[oldItemPosition], newList[newItemPosition], true)
             }
 
             override fun getOldListSize() = items.size
 
             override fun getNewListSize() = newList.size
         })
-        items = newList.toMutableList()
+        if (newList is MutableList)
+            items = newList
+        else
+            items = newList.toMutableList()
         diff.dispatchUpdatesTo(this)
     }
 
 }
 
 interface LayoutFactory {
-    fun createView(parent: ViewGroup, type: Int) : View;
+    fun createView(parent: ViewGroup, type: Int) : View
 }
 
 class FastListViewHolder<T>(override val containerView: View, val holderType: Int) : RecyclerView.ViewHolder(containerView), LayoutContainer {
