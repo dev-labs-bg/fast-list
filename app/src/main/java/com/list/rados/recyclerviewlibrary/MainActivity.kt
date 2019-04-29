@@ -36,19 +36,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         recycler_view.bind(list)
-                .map(layout = R.layout.item, predicate = { it.type == 1 }) { item: Item ->
+                .map(layout = R.layout.item, predicate = {it:Item, _ -> it.type == 1 }) { item: Item ->
                     item_text.text = item.value
                     container.setOnClickListener {
                         toast(item.value)
                     }
                 }
-                .map(layout = R.layout.item_second, predicate = { it.type == 2 }) { item: Item ->
+                .map(layout = R.layout.item_second, predicate = {it:Item, _ ->  it.type == 2 }) { item: Item ->
                     item_second_text.text = item.value
                     container_second.setOnClickListener {
                         toast(item.value)
                     }
                 }
-                .map(layoutFactory = LocalFactory(this), predicate = { it.type == 3 }) { item: Item ->
+                .map(layoutFactory = LocalFactory(this), predicate = {it:Item, _ ->  it.type == 3 }) { item: Item ->
                     item_custom_text.text = item.value
                     container_custom.setOnClickListener {
                         toast(item.value)
