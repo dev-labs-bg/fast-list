@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import kotlinx.android.extensions.LayoutContainer
 
 /**
@@ -24,6 +25,15 @@ fun <T> RecyclerView.bind(items: List<T>): FastListAdapter<T> {
 }
 
 /**
+ * ViewPager2 update
+ * Dynamic list bind function. It should be followed by one or multiple .map calls.
+ * @param items - Generic list of the items to be displayed in the list
+ */
+fun <T> ViewPager2.bind(items: List<T>): FastListAdapter<T> {
+    return FastListAdapter(items.toMutableList(), vpList = this)
+}
+
+/**
  * Simple list bind function.
  * @param items - Generic list of the items to be displayed in the list
  * @param singleLayout - The layout that will be used in the list
@@ -33,7 +43,20 @@ fun <T> RecyclerView.bind(items: List<T>): FastListAdapter<T> {
 fun <T> RecyclerView.bind(items: List<T>, @LayoutRes singleLayout: Int = 0, singleBind: (View.(item: T) -> Unit)): FastListAdapter<T> {
     layoutManager = LinearLayoutManager(context)
     return FastListAdapter(items.toMutableList(), this
-    ).map(singleLayout, { true }, singleBind)
+    ).map(singleLayout, {item: T, idx: Int ->  true }, singleBind)
+}
+
+/**
+ * ViewPager2 update
+ * Simple list bind function.
+ * @param items - Generic list of the items to be displayed in the list
+ * @param singleLayout - The layout that will be used in the list
+ * @param singleBind - The "binding" function between the item and the layout. This is the standard "bind" function in traditional ViewHolder classes. It uses Kotlin Extensions
+ * so you can just use the XML names of the views inside your layout to address them.
+ */
+fun <T> ViewPager2.bind(items: List<T>, @LayoutRes singleLayout: Int = 0, singleBind: (View.(item: T) -> Unit)): FastListAdapter<T> {
+    return FastListAdapter(items.toMutableList(), vpList = this
+    ).map(singleLayout, {item: T, idx: Int ->  true }, singleBind)
 }
 
 
@@ -45,15 +68,34 @@ fun <T> RecyclerView.bind(items: List<T>, @LayoutRes singleLayout: Int = 0, sing
  * by changing the lambda in the function
  */
 fun <T> RecyclerView.update(newItems: List<T>) {
-    (adapter as? FastListAdapter<T>)?.update(newItems) { o, n -> o == n }
+    (adapter as? FastListAdapter<T>)?.update(newItems) { o, n, _ -> o == n }
 }
 
+/**
+ * ViewPager2 update
+ * Updates the list using DiffUtils.
+ * @param newItems the new list which is to replace the old one.
+ *
+ * NOTICE: The comparator currently checks if items are literally the same. You can change that if you want,
+ * by changing the lambda in the function
+ */
+fun <T> ViewPager2.update(newItems: List<T>) {
+    (adapter as? FastListAdapter<T>)?.update(newItems) { o, n, _ -> o == n }
+}
 
-open class FastListAdapter<T>(private var items: MutableList<T>, private var list: RecyclerView
-) : RecyclerView.Adapter<FastListViewHolder<T>>() {
+open class FastListAdapter<T>(private var items: MutableList<T>, private var list: RecyclerView?=null, private var vpList : ViewPager2?=null)
+    : RecyclerView.Adapter<FastListViewHolder<T>>() {
 
-    private inner class BindMap(val layout: Int, var type: Int = 0, val bind: View.(item: T) -> Unit, val predicate: (item: T) -> Boolean) {
-        constructor(lf: LayoutFactory, type: Int = 0, bind: View.(item: T) -> Unit, predicate: (item: T) -> Boolean) : this(0, type, bind, predicate){
+    init {
+        if (vpList != null && list != null)
+            throw IllegalArgumentException("You can only use either the Recycler(list) or the Pager(vpList)")
+        if (vpList == null && list == null)
+            throw IllegalArgumentException("You have to use either the Recycler(list) or the Pager(vpList)")
+
+    }
+
+    private inner class BindMap(val layout: Int, var type: Int = 0, val bind: View.(item: T) -> Unit, val predicate: (item: T, idx : Int) -> Boolean) {
+        constructor(lf: LayoutFactory, type: Int = 0, bind: View.(item: T) -> Unit, predicate: (item: T, idx : Int) -> Boolean) : this(0, type, bind, predicate){
             layoutFactory = lf
         }
         var layoutFactory : LayoutFactory? = null
@@ -81,7 +123,7 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
     override fun getItemCount() = items.size
 
     override fun getItemViewType(position: Int) = try {
-        bindMap.first { it.predicate(items[position]) }.type
+        bindMap.first { it.predicate(items[position], position) }.type
     } catch (e: Exception) {
         0
     }
@@ -93,9 +135,10 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
      * @param bind - The "binding" function between the item and the layout. This is the standard "bind" function in traditional ViewHolder classes. It uses Kotlin Extensions
      * so you can just use the XML names of the views inside your layout to address them.
      */
-    fun map(@LayoutRes layout: Int, predicate: (item: T) -> Boolean, bind: View.(item: T) -> Unit): FastListAdapter<T> {
+    fun map(@LayoutRes layout: Int, predicate: (item: T, idx : Int) -> Boolean, bind: View.(item: T) -> Unit): FastListAdapter<T> {
         bindMap.add(BindMap(layout, typeCounter++, bind, predicate))
-        list.adapter = this
+        list?.adapter = this
+        vpList?.adapter = this
         return this
     }
 
@@ -107,9 +150,10 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
      * @param bind - The "binding" function between the item and the layout. This is the standard "bind" function in traditional ViewHolder classes. It uses Kotlin Extensions
      * so you can just use the XML names of the views inside your layout to address them.
      */
-    fun map(layoutFactory: LayoutFactory, predicate: (item: T) -> Boolean, bind: View.(item: T) -> Unit): FastListAdapter<T> {
+    fun map(layoutFactory: LayoutFactory, predicate: (item: T, idx : Int) -> Boolean, bind: View.(item: T) -> Unit): FastListAdapter<T> {
         bindMap.add(BindMap(layoutFactory, typeCounter++, bind, predicate))
-        list.adapter = this
+        list?.adapter = this
+        vpList?.adapter = this
         return this
     }
 
@@ -117,33 +161,37 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
      * Sets up a layout manager for the recycler view.
      */
     fun layoutManager(manager: RecyclerView.LayoutManager): FastListAdapter<T> {
-        list.layoutManager = manager
+        vpList?.let{ throw UnsupportedOperationException("layoumanager not needed for ViewPager2")}
+        list!!.layoutManager = manager
         return this
     }
 
-    fun update(newList: List<T>, compare: (T, T) -> Boolean) {
+    fun update(newList: List<T>, compare: (T, T, Boolean) -> Boolean) {
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
 
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return compare(items[oldItemPosition], newList[newItemPosition])
+                return compare(items[oldItemPosition], newList[newItemPosition], false)
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return items[oldItemPosition] == newList[newItemPosition]
+                return compare(items[oldItemPosition], newList[newItemPosition], true)
             }
 
             override fun getOldListSize() = items.size
 
             override fun getNewListSize() = newList.size
         })
-        items = newList.toMutableList()
+        if (newList is MutableList)
+            items = newList
+        else
+            items = newList.toMutableList()
         diff.dispatchUpdatesTo(this)
     }
 
 }
 
 interface LayoutFactory {
-    fun createView(parent: ViewGroup, type: Int) : View;
+    fun createView(parent: ViewGroup, type: Int) : View
 }
 
 class FastListViewHolder<T>(override val containerView: View, val holderType: Int) : RecyclerView.ViewHolder(containerView), LayoutContainer {
