@@ -1,7 +1,7 @@
 ![logo](https://raw.githubusercontent.com/dev-labs-bg/fast-list/master/logo.png)
 
 
-Create dynamic, fast and easy recycler view lists. **No adapters, no view holders**.
+Create dynamic, fast and easy recycler view lists (including ViewPager2). **No adapters, no view holders**.
 
 [![Download](https://img.shields.io/badge/download-1.3-6db33f.svg?style=flat-square&label=version)](https://jitpack.io/#dev-labs-bg/fast-list) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
 
@@ -19,7 +19,7 @@ FastList supports 2 types of lists- single layout lists and dynamic lists.
             item_text.text = it.value
         }
 ```
-That's it! The first parameter is the list you want to show, the second is the ID of the layout and the third one is a function for binding each element. It uses Kotlin Extensions, so you can directly address the XML views and set them up.
+That's it (for ViewPager2, just replace recycler_view with the ViewPager2 instance)! The first parameter is the list you want to show, the second is the ID of the layout and the third one is a function for binding each element. It uses Kotlin Extensions, so you can directly address the XML views and set them up.
 
 
 - The second type is dynamic lists with multiple layouts:
@@ -37,6 +37,30 @@ That's it! The first parameter is the list you want to show, the second is the I
                 .layoutManager(LinearLayoutManager(this))
 ```
 The map function accepts 3 parameters. The first is the ID of the layout for the type. The second is the predicate function by which you want to sort your items. The last one is the "view holder" binding function for each element. It uses Kotlin Extensions, so you can directly address the XML views and set them up.
+
+If you need control over your view's creation, you can pass a factory that allows you to create your own view:
+```kotlin
+        val list = listOf(Item("fast", 1), Item("recycler", 2), Item("view", 1))
+
+        recycler_view.bind(list)
+                .map(layoutFactory = LocalFactory(this), predicate = { it.type == 1}) {
+                    item_text.text = it.value
+                }
+                .map(layout = R.layout.item_second, predicate = { it.type == 2}) {
+                    item_second_text.text = it.value
+                }
+                .layoutManager(LinearLayoutManager(this))
+				...
+	class LocalFactory(val activity: AppCompatActivity) : LayoutFactory {
+		override fun createView(parent: ViewGroup, type: Int): View {
+			val view = LayoutInflater.from(activity).inflate(R.layout.item_custom,
+					parent, false)
+			view.manipulateAsNeeded()		
+			return view		
+		}
+	}				
+```
+
 
 
 You can also update a list in a shown recycler view with this DiffUtils update function:
