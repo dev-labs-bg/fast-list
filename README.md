@@ -53,9 +53,9 @@ If you need control over your view's creation, you can pass a factory that allow
 				...
 	class LocalFactory(val activity: AppCompatActivity) : LayoutFactory {
 		override fun createView(parent: ViewGroup, type: Int): View {
-			val view = LayoutInflater.from(activity).inflate(R.layout.item_custom,
+			val view = LayoutInflater.from(activity).inflate(R.layout.item,
 					parent, false)
-			view.manipulateAsNeeded()		
+			//Manipulate view as needed 
 			return view		
 		}
 	}				
