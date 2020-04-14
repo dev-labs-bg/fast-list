@@ -71,51 +71,26 @@ You can also update a list in a shown recycler view with this DiffUtils update f
         recycler_view.update(list2)
 ```
 
----
 ## Download
 
 ### Manually
 
-You can also manually download [the library class](https://github.com/dev-labs-bg/fast-list/blob/master/fast-list/src/main/java/com/list/rados/fast_list/BaseList.kt) and use it in your application.
+The recommended way to download is to copy the [the library class](https://github.com/dev-labs-bg/fast-list/blob/master/fast-list/src/main/java/com/list/rados/fast_list/BaseList.kt) and use it in your application.
 
 **Important**: For the manual download you need Kotlin extensions to be enabled. To turn them on, simply place "apply plugin: 'kotlin-android-extensions'" inside of your app build.gradle
-
 
 ### Gradle
 
 ```gradle
 dependencies {
   implementation 'bg.devlabs.fastlist:fast-list:$latest_version'
-
 }
  ```
- 
-### Maven
-```xml
-<dependency>
-  <groupId>bg.devlabs.fastlist</groupId>
-  <artifactId>fast-list</artifactId>
-  <version>latest_version</version>
-  <type>pom</type>
-</dependency>
-```
 
----
-## Compatibility
-
-Minimum Android SDK: API level 19
-
----
-## Author
-
-Radoslav Yankov [@Radoslav_Y](https://twitter.com/Radoslav_Y)
-
----
 ## Getting help
 
-If you spot a problem you can open an issue on the Github page, or alternatively, you can tweet us at [@devlabsbg](https://twitter.com/devlabsbg)
+Dev Labs [@devlabsbg](https://twitter.com/devlabsbg)
 
----
-## License
+Radoslav Yankov [@rado__yankov](https://twitter.com/rado__yankov/)
 
-FastList is released under the [MIT License](https://github.com/dev-labs-bg/fast-list/blob/master/LICENSE).
+Under [MIT License](https://github.com/dev-labs-bg/fast-list/blob/master/LICENSE).
