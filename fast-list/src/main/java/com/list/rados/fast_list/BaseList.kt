@@ -15,6 +15,8 @@ import kotlinx.android.extensions.LayoutContainer
  * radoslavyankov@gmail.com
  */
 
+typealias BindingClosure<T> = (View.(item: T, position: Int) -> Unit)
+
 /**
  * Dynamic list bind function. It should be followed by one or multiple .map calls.
  * @param items - Generic list of the items to be displayed in the list
@@ -40,7 +42,7 @@ fun <T> ViewPager2.bind(items: List<T>): FastListAdapter<T> {
  * @param singleBind - The "binding" function between the item and the layout. This is the standard "bind" function in traditional ViewHolder classes. It uses Kotlin Extensions
  * so you can just use the XML names of the views inside your layout to address them.
  */
-fun <T> RecyclerView.bind(items: List<T>, @LayoutRes singleLayout: Int = 0, singleBind: (View.(item: T) -> Unit)): FastListAdapter<T> {
+fun <T> RecyclerView.bind(items: List<T>, @LayoutRes singleLayout: Int = 0, singleBind: BindingClosure<T>): FastListAdapter<T> {
     layoutManager = LinearLayoutManager(context)
     return FastListAdapter(items.toMutableList(), this
     ).map(singleLayout, {item: T, idx: Int ->  true }, singleBind)
@@ -54,7 +56,7 @@ fun <T> RecyclerView.bind(items: List<T>, @LayoutRes singleLayout: Int = 0, sing
  * @param singleBind - The "binding" function between the item and the layout. This is the standard "bind" function in traditional ViewHolder classes. It uses Kotlin Extensions
  * so you can just use the XML names of the views inside your layout to address them.
  */
-fun <T> ViewPager2.bind(items: List<T>, @LayoutRes singleLayout: Int = 0, singleBind: (View.(item: T) -> Unit)): FastListAdapter<T> {
+fun <T> ViewPager2.bind(items: List<T>, @LayoutRes singleLayout: Int = 0, singleBind: BindingClosure<T>): FastListAdapter<T> {
     return FastListAdapter(items.toMutableList(), vpList = this
     ).map(singleLayout, {item: T, idx: Int ->  true }, singleBind)
 }
@@ -94,8 +96,8 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
 
     }
 
-    private inner class BindMap(val layout: Int, var type: Int = 0, val bind: View.(item: T) -> Unit, val predicate: (item: T, idx : Int) -> Boolean) {
-        constructor(lf: LayoutFactory, type: Int = 0, bind: View.(item: T) -> Unit, predicate: (item: T, idx : Int) -> Boolean) : this(0, type, bind, predicate){
+    private inner class BindMap(val layout: Int, var type: Int = 0, val bind: BindingClosure<T>, val predicate: (item: T, idx : Int) -> Boolean) {
+        constructor(lf: LayoutFactory, type: Int = 0, bind: BindingClosure<T>, predicate: (item: T, idx : Int) -> Boolean) : this(0, type, bind, predicate){
             layoutFactory = lf
         }
         var layoutFactory : LayoutFactory? = null
@@ -117,7 +119,7 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
 
     override fun onBindViewHolder(holder: FastListViewHolder<T>, position: Int) {
         val item = items.get(position)
-        holder.bind(item, bindMap.first { it.type == holder.holderType }.bind)
+        holder.bind(item, position, bindMap.first { it.type == holder.holderType }.bind)
     }
 
     override fun getItemCount() = items.size
@@ -135,7 +137,7 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
      * @param bind - The "binding" function between the item and the layout. This is the standard "bind" function in traditional ViewHolder classes. It uses Kotlin Extensions
      * so you can just use the XML names of the views inside your layout to address them.
      */
-    fun map(@LayoutRes layout: Int, predicate: (item: T, idx : Int) -> Boolean, bind: View.(item: T) -> Unit): FastListAdapter<T> {
+    fun map(@LayoutRes layout: Int, predicate: (item: T, idx : Int) -> Boolean, bind: BindingClosure<T>): FastListAdapter<T> {
         bindMap.add(BindMap(layout, typeCounter++, bind, predicate))
         list?.adapter = this
         vpList?.adapter = this
@@ -150,7 +152,7 @@ open class FastListAdapter<T>(private var items: MutableList<T>, private var lis
      * @param bind - The "binding" function between the item and the layout. This is the standard "bind" function in traditional ViewHolder classes. It uses Kotlin Extensions
      * so you can just use the XML names of the views inside your layout to address them.
      */
-    fun map(layoutFactory: LayoutFactory, predicate: (item: T, idx : Int) -> Boolean, bind: View.(item: T) -> Unit): FastListAdapter<T> {
+    fun map(layoutFactory: LayoutFactory, predicate: (item: T, idx : Int) -> Boolean, bind: BindingClosure<T>): FastListAdapter<T> {
         bindMap.add(BindMap(layoutFactory, typeCounter++, bind, predicate))
         list?.adapter = this
         vpList?.adapter = this
@@ -195,9 +197,9 @@ interface LayoutFactory {
 }
 
 class FastListViewHolder<T>(override val containerView: View, val holderType: Int) : RecyclerView.ViewHolder(containerView), LayoutContainer {
-    fun bind(entry: T, func: View.(item: T) -> Unit) {
+    fun bind(entry: T, position: Int, func: BindingClosure<T>) {
         containerView.apply {
-            func(entry)
+            func(entry, position)
         }
     }
 }
