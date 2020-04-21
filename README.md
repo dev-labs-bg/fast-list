@@ -3,7 +3,7 @@
 
 Create dynamic, fast and easy recycler view lists (including ViewPager2). **No adapters, no view holders**.
 
-[![Download](https://img.shields.io/badge/download-1.4-6db33f.svg?style=flat-square&label=version)](https://jitpack.io/#dev-labs-bg/fast-list) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
+[![Download](https://img.shields.io/badge/version-1.4-6db33f?style=flat-square)](https://jitpack.io/#dev-labs-bg/fast-list) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
 
 
 ## Usage
