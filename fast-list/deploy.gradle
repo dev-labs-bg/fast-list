@@ -6,7 +6,7 @@ ext {
     // compile '<groupId>:<artifactId>:<libVersion>'
     groupId = 'bg.devlabs.fastlist' // package name of the project
     artifactId = "fast-list" // module name of the library
-    libVersion = "1.1"
+    libVersion = "1.4"
 }
 version = libVersion
 group = groupId
