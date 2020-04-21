@@ -3,7 +3,7 @@
 
 Create dynamic, fast and easy recycler view lists (including ViewPager2). **No adapters, no view holders**.
 
-[![Download](https://img.shields.io/badge/download-1.3-6db33f.svg?style=flat-square&label=version)](https://jitpack.io/#dev-labs-bg/fast-list) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
+[![Download](https://img.shields.io/badge/download-1.4-6db33f.svg?style=flat-square&label=version)](https://jitpack.io/#dev-labs-bg/fast-list) [![Twitter URL](https://img.shields.io/badge/twitter-%40devlabsbg-1DA1F2.svg?style=flat-square&logo=twitter)](http://twitter.com/devlabsbg)
 
 
 ## Usage
@@ -15,7 +15,7 @@ FastList supports 2 types of lists- single layout lists and dynamic lists.
 ```kotlin
         val list = listOf(Item("fast", 1), Item("recycler", 2), Item("view", 1))
 
-        recycler_view.bind(list, R.layout.item) { it : Item ->
+        recycler_view.bind(list, R.layout.item) { it : Item, position: Int ->
             item_text.text = it.value
         }
 ```
@@ -28,10 +28,10 @@ That's it (for ViewPager2, just replace recycler_view with the ViewPager2 instan
         val list = listOf(Item("fast", 1), Item("recycler", 2), Item("view", 1))
 
         recycler_view.bind(list)
-                .map(layout = R.layout.item, predicate = { it.type == 1}) {
+                .map(layout = R.layout.item, predicate = { it: Item, _ -> it.type == 1}) { item: Item, p: Int ->
                     item_text.text = it.value
                 }
-                .map(layout = R.layout.item_second, predicate = { it.type == 2}) {
+                .map(layout = R.layout.item_second, predicate = { it: Item, _ -> it.type == 2}) { item: Item, p: Int ->
                     item_second_text.text = it.value
                 }
                 .layoutManager(LinearLayoutManager(this))
@@ -43,10 +43,10 @@ If you need control over your view's creation, you can pass a factory that allow
         val list = listOf(Item("fast", 1), Item("recycler", 2), Item("view", 1))
 
         recycler_view.bind(list)
-                .map(layoutFactory = LocalFactory(this), predicate = { it.type == 1}) {
+                .map(layoutFactory = LocalFactory(this), predicate = { it: Item, _ -> it.type == 1}) { item: Item, p: Int ->
                     item_text.text = it.value
                 }
-                .map(layout = R.layout.item_second, predicate = { it.type == 2}) {
+                .map(layout = R.layout.item_second, predicate = { it: Item, _ -> it.type == 2}) { item: Item, p: Int ->
                     item_second_text.text = it.value
                 }
                 .layoutManager(LinearLayoutManager(this))
